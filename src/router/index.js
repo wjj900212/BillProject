@@ -1,16 +1,27 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import HelloWorld from '@/components/HelloWorld'
-import Bill from '@/components/Bill'
+import HomePage from '../views/HomePage'
+
+const originalPush = Router.prototype.push
+
+Router.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 
 Vue.use(Router)
 
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'Bill',
-      component: Bill
+let constRouter = [
+  {
+    path: '/',
+    name: 'homePage',
+    component: HomePage,
+    meta: {
+      title: '首页'
     }
-  ]
+  }
+]
+
+let router = new Router({
+  routes: constRouter
 })
+export default router

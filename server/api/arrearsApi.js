@@ -1,34 +1,18 @@
-var models = require('../db')
-var express = require('express')
-var router = express.Router()
-var mysql = require('mysql')
-var $sql = require('../sqlMap')
-// 连接数据库
-var conn = mysql.createConnection(models.mysql)
-conn.connect()
-var jsonWrite = function (res, ret) {
-  if (typeof ret === 'undefined') {
-    res.json({
-      code: '1', msg: '操作失败'
+const express = require('express')
+const router = express.Router()
+const sqlMap = require('../api/arrearsApi')
+// 实现与mysql交互  使用连接池提升性能
+const {pool, Result} = require('../mysqlPool')
+
+// 查询所有欠账
+router.get('/arrears', (req, res) => {
+  var $sql = sqlMap.arrears.selectArrears
+  pool.getConnection((err, conn) => {
+    conn.query($sql, (e, r) => {
+      if (e) throw err
+      res.json(new Result(r))
     })
-  } else {
-    res.json(
-      ret
-    )
-  }
-}
-// 增加用户接口
-router.post('/addUser', (req, res) => {
-  var sql = $sql.user.add
-  var params = req.body
-  console.log(params)
-  conn.query(sql, [params.username, params.age], function (err, result) {
-    if (err) {
-      console.log(err)
-    }
-    if (result) {
-      jsonWrite(res, result)
-    }
+    conn.release() // 释放连接池，等待别的连接使用
   })
 })
 module.exports = router

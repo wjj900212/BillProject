@@ -1,7 +1,8 @@
-const arrearsApi = require('./api/arrearsApi')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
+const arrearsApi = require('./api/arrearsApi')
 
 // 采用设置所有均可访问的方法解决跨域问题
 app.all('*', function (req, res, next) {
@@ -19,12 +20,14 @@ app.all('*', function (req, res, next) {
   }
 })
 
+app.use(cors()) // 解决跨域
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-
 // 后端api路由
-app.use('/api/arrears', arrearsApi)
-
+app.use('/api', arrearsApi)
 // 监听端口
 app.listen(3000)
 console.log('success listen at port:3000......')
+app.get('/', (req, res) => {
+  res.json('helloWord')
+})

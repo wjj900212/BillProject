@@ -1,12 +1,5 @@
 <template>
   <div class="Bill">
-    <div class="title">
-      <a-row>
-        <a-col :span="24">
-          记账
-        </a-col>
-      </a-row>
-    </div>
     <div class="content">
       <div class="con-btn">
         <a-button type="primary" @click="showModal">
@@ -103,6 +96,9 @@ export default {
       confirmLoading: false
     }
   },
+  mounted () {
+    this.getArrearsList()
+  },
   methods: {
     showModal () {
       this.visible = true
@@ -119,6 +115,13 @@ export default {
     handleCancel (e) {
       console.log('Clicked cancel button')
       this.visible = false
+    },
+    getArrearsList () {
+      this.$get('/api/arrears', {
+      }).then((r) => {
+        let dataList = r.data.data
+        console.log(dataList)
+      })
     }
   }
 }
@@ -140,22 +143,13 @@ li {
 a {
   color: #42b983;
 }
-  .title{
-    background:#42b983;
-    font-size:18px;
-    font-weight: bold;
-    color:#ffffff;
-    height:40px;
-    line-height: 40px;
-  }
-  .content{
-    width:80%;
-    height:100%;
-    margin:0px auto;
-    padding:20px 10px 10px 10px;
-  }
-  .con-btn{
-    margin-bottom:10px;
-    text-align: right;
-  }
+.content{
+  width:100%;
+  height:100%;
+  margin:0px auto;
+}
+.con-btn{
+  margin-bottom:10px;
+  text-align: right;
+}
 </style>

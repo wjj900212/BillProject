@@ -2,15 +2,12 @@ import axios from 'axios'
 import {message, Modal, notification} from 'ant-design-vue'
 import moment from 'moment'
 import store from '../store'
-import db from 'utils/localstorage'
+import db from '../utils/localstorage'
 moment.locale('zh-cn')
 
 // 统一配置
 let MK_REQUEST = axios.create({
-  // baseURL: 'http://192.168.120.233/admin-show/',
-  // baseURL: 'http://192.168.120.125/admin/',
-  // baseURL: 'http://39.100.228.243/admin/',
-  baseURL: 'http://isafety.hazardscience.com.cn/disaster/',
+  baseURL: 'http://localhost:3000/',
   responseType: 'json',
   validateStatus (status) {
     // 200 外的状态码都认定为失败
