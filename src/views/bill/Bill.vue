@@ -12,11 +12,15 @@
       <div class="con-table">
         <template>
           <a-table :columns="columns" :data-source="data" class="components-table-demo-nested">
+            <span slot="debtDate" slot-scope="text">{{text| formatDate}}</span>
+            <span slot="status" slot-scope="text">
+              <span v-if="text === 1">还在欠</span>
+              <span v-else-if="text === 0">已还清</span>
+            </span>
             <span slot="operation" slot-scope="text">
               <a>编辑</a>
               <a>添加</a>
             </span>
-
             <a-table
               slot="expandedRowRender"
               slot-scope="text"
@@ -24,7 +28,6 @@
               :data-source="innerData"
               :pagination="false"
             >
-              <span slot="status" slot-scope="text"> <a-badge status="success" />Finished </span>
             </a-table>
           </a-table>
         </template>
@@ -33,42 +36,32 @@
     </div>
     <!--添加弹出框-->
     <a-modal
-      title="Title"
+      title="添加欠款信息"
       :visible="visible"
       :confirm-loading="confirmLoading"
+      cancelText="取消"
+      okText="确定"
       @ok="handleOk"
       @cancel="handleCancel"
     >
-      <p>{{ ModalText }}</p>
+    <add-bill></add-bill>
     </a-modal>
   </div>
 </template>
 
 <script>
+import AddBill from './addBill'
 const columns = [
   { title: '序号', customRender: (text, record, index) => `${index + 1}` },
   { title: '欠款人姓名', dataIndex: 'name', key: 'name' },
   { title: '欠款金额', dataIndex: 'platform', key: 'platform' },
-  { title: '欠款日期', dataIndex: 'version', key: 'version' },
+  { title: '欠款日期', dataIndex: 'debtDate', key: 'debtDate', scopedSlots: { customRender: 'debtDate' } },
   { title: '已还金额', dataIndex: 'upgradeNum', key: 'upgradeNum' },
   { title: '剩余金额', dataIndex: 'creator', key: 'creator' },
-  { title: '欠款状态', dataIndex: 'createdAt', key: 'createdAt' },
-  { title: '备注', dataIndex: 'createdAt1', key: 'createdAt1' },
+  { title: '欠款状态', dataIndex: 'status', key: 'status', scopedSlots: { customRender: 'status' } },
+  { title: '备注', dataIndex: 'remark', key: 'remark' },
   { title: '操作', key: 'operation', scopedSlots: { customRender: 'operation' } }
 ]
-
-const data = []
-for (let i = 0; i < 3; ++i) {
-  data.push({
-    key: i,
-    name: 'Screem',
-    platform: 'iOS',
-    version: '10.3.4.5654',
-    upgradeNum: 500,
-    creator: 'Jack',
-    createdAt: '2014-12-24 23:12:00'
-  })
-}
 
 const innerColumns = [
   { title: '还款日期', dataIndex: 'date', key: 'date' },
@@ -87,14 +80,16 @@ export default {
   name: 'Bill',
   data () {
     return {
-      data,
+      data: [],
       columns,
       innerColumns,
       innerData,
-      ModalText: 'Content of the modal',
       visible: false,
       confirmLoading: false
     }
+  },
+  components: {
+    AddBill
   },
   mounted () {
     this.getArrearsList()
@@ -117,10 +112,25 @@ export default {
       this.visible = false
     },
     getArrearsList () {
+      let _this = this
       this.$get('/api/arrears', {
       }).then((r) => {
         let dataList = r.data.data
         console.log(dataList)
+        let arrearsData = []
+        for (let i = 0; i < dataList.length; ++i) {
+          arrearsData.push({
+            key: dataList[i].pkey,
+            name: dataList[i].name,
+            platform: dataList[i].money,
+            debtDate: dataList[i].debtDate,
+            upgradeNum: 500,
+            creator: 'Jack',
+            status: dataList[i].status,
+            remark: dataList[i].remark
+          })
+        }
+        _this.data = arrearsData
       })
     }
   }

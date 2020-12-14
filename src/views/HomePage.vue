@@ -54,7 +54,7 @@
   </a-layout>
 </template>
 <script>
-import Bill from '../components/Bill'
+import Bill from './bill/Bill'
 export default {
   name: 'HomePage',
   data () {

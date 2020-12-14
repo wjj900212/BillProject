@@ -7,6 +7,13 @@ import request from './utils/request'
 import db from './utils/localstorage'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
+import Moment from 'moment'
+
+// 定义全局时间戳过滤器
+Vue.filter('formatDate', function (value) {
+  return Moment(value).format('YYYY-MM-DD')
+})
+
 Vue.config.productionTip = false
 
 Vue.use(Antd)

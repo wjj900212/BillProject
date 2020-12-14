@@ -28,6 +28,3 @@ app.use('/api', arrearsApi)
 // 监听端口
 app.listen(3000)
 console.log('success listen at port:3000......')
-app.get('/', (req, res) => {
-  res.json('helloWord')
-})
