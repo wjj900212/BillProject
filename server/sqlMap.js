@@ -3,7 +3,8 @@ var sqlMap = {
   arrears: {
     // 查询欠款表
     selectArrears: 'SELECT * FROM arrears;',
-    addArrears: 'INSERT INTO arrears(name,debtDate,money,phone,status,remark) values(?,?,?,?,?,?);'
+    addArrears: 'INSERT INTO arrears(pkey,name,debtDate,money,phone,status,image,remark) values(0,?,?,?,?,1,?,?);',
+    deleteArrears: 'delete from arrears where pkey=?'
   }
 }
 

@@ -17,10 +17,11 @@
               <span v-if="text === 1">还在欠</span>
               <span v-else-if="text === 0">已还清</span>
             </span>
-            <span slot="operation" slot-scope="text">
-              <a>编辑</a>
+            <template slot="operation" slot-scope="text, record">
+              <a-icon type="setting" theme="twoTone" @click="billEidt(record)" title="编辑"/>
+              <a-icon type="delete" theme="twoTone" twoToneColor="#42b983" @click="billDelete(record)" title="删除"/>
               <a>添加</a>
-            </span>
+            </template>
             <a-table
               slot="expandedRowRender"
               slot-scope="text"
@@ -35,17 +36,11 @@
 
     </div>
     <!--添加弹出框-->
-    <a-modal
-      title="添加欠款信息"
-      :visible="visible"
-      :confirm-loading="confirmLoading"
-      cancelText="取消"
-      okText="确定"
-      @ok="handleOk"
-      @cancel="handleCancel"
-    >
-    <add-bill></add-bill>
-    </a-modal>
+    <add-bill
+      @close="handleBillAddClose"
+      @success="handleBillAddSuccess"
+      :billAddVisiable = "isShowBillAdd.visible"
+    ></add-bill>
   </div>
 </template>
 
@@ -84,8 +79,9 @@ export default {
       columns,
       innerColumns,
       innerData,
-      visible: false,
-      confirmLoading: false
+      isShowBillAdd: {
+        visible: false
+      }
     }
   },
   components: {
@@ -96,8 +92,17 @@ export default {
   },
   methods: {
     showModal () {
-      this.visible = true
+      this.isShowBillAdd.visible = true
       console.log('弹出model')
+    },
+    handleBillAddClose () {
+      this.isShowBillAdd.visible = false
+      console.log('关闭添加设备页面')
+    },
+    handleBillAddSuccess () {
+      this.isShowBillAdd.visible = false
+      this.$message.success('新增设备成功')
+      this.getArrearsList()
     },
     handleOk (e) {
       this.ModalText = 'The modal will be closed after two seconds'
@@ -131,6 +136,24 @@ export default {
           })
         }
         _this.data = arrearsData
+      })
+    },
+    billEidt (record) {
+
+    },
+    billDelete (record) {
+      let that = this
+      this.$confirm({
+        title: '确定删除所选中的记录?',
+        content: '当您点击确定按钮后，这些记录将会被彻底删除',
+        centered: true,
+        onOk () {
+          let params = {pkey: record.key}
+          that.$postDate('api/delete', {...params}).then(() => {
+            that.$message.success('删除成功')
+            that.getArrearsList()
+          })
+        }
       })
     }
   }

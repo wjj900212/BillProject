@@ -1,4 +1,13 @@
 <template>
+  <a-drawer
+    title="添加设备"
+    :maskClosable="false"
+    width=650
+    placement="right"
+    :closable="false"
+    @close="handleCancel"
+    :visible="billAddVisiable"
+    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
   <a-form :form="form" @submit="handleSubmit">
     <a-form-item v-bind="formItemLayout" label="姓名:">
       <a-input placeholder="请输入借款人姓名"
@@ -16,7 +25,7 @@
       />
     </a-form-item>
     <a-form-item v-bind="formItemLayout" label="金额:">
-      <a-input placeholder="请借款金额"
+      <a-input placeholder="请输入借款金额"
         v-decorator="[
           'money',
           {
@@ -28,13 +37,12 @@
             ],
           },
         ]"
-        type="password"
       />
     </a-form-item>
     <a-form-item v-bind="formItemLayout" label="日期:">
       <a-date-picker placeholder="请选择借款日期"
         v-decorator="[
-      'date-picker',
+      'debtDate',
       {
         rules: [
         {
@@ -66,17 +74,27 @@
       </a-input>
     </a-form-item>
     <a-form-item v-bind="formItemLayout" label="备注:">
-      <a-textarea placeholder="备注信息" allow-clear @change="onChange" />
+      <a-textarea placeholder="备注信息" v-decorator="[
+          'remark'
+        ]" allow-clear />
     </a-form-item>
   </a-form>
+    <div class="drawer-bootom-button">
+      <a-button @click="handleCancel" type="primary">取消</a-button>
+      <a-button @click="handleOk" type="primary" :loading="loading">提交</a-button>
+    </div>
+  </a-drawer>
 </template>
 
 <script>
+import Moment from 'moment'
 export default {
   name: 'add-bill',
   data () {
     return {
       confirmDirty: false,
+      confirmLoading: false,
+      loading: false,
       autoCompleteResult: [],
       formItemLayout: {
         labelCol: {
@@ -90,20 +108,48 @@ export default {
       }
     }
   },
+  props: {
+    billAddVisiable: {
+      default: false
+    }
+  },
+  components: {
+    Moment
+  },
   beforeCreate () {
     this.form = this.$form.createForm(this, { name: 'register' })
   },
   methods: {
+    handleOk () {
+      this.handleSubmit()
+    },
+    handleCancel () {
+      this.$emit('close')
+    },
     handleSubmit (e) {
-      e.preventDefault()
-      this.form.validateFieldsAndScroll((err, values) => {
+      /* e.preventDefault()
+      console.log(e) */
+      let _this = this
+      let params = {}
+      this.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values)
+          params.name = values.name
+          params.debtDate = Moment(values.debtDate).format('YYYY-MM-DD')
+          params.money = values.money
+          if (values.phone !== undefined) {
+            params.phone = values.phone
+          }
+          if (values.remark !== undefined) {
+            params.remark = values.remark
+          }
+          console.log(params)
+          _this.$postDate('api/add', params, {headers: {'Content-Type': 'application/json'}}).then((r) => {
+            _this.form.resetFields()
+            _this.$emit('success')
+          })
         }
       })
-    },
-    onChange (e) {
-      console.log(e)
     }
   }
 }

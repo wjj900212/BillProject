@@ -7,6 +7,7 @@ import request from './utils/request'
 import db from './utils/localstorage'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
+import globalFunction from './utils/globalFunction'
 import Moment from 'moment'
 
 // 定义全局时间戳过滤器
@@ -27,6 +28,7 @@ Vue.prototype.$delete = request.delete
 Vue.prototype.$export = request.export
 Vue.prototype.$download = request.download
 Vue.prototype.$upload = request.upload
+Vue.prototype.$globalFunction = globalFunction
 
 /* eslint-disable no-new */
 new Vue({
