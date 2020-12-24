@@ -30,4 +30,8 @@ create table if not exists repayment(
 );
 select * from arrears;
 insert into arrears(name,debtDate,money,phone,status,image,remark) values('测试1','2020-12-14','1000','13699196014','1','','');
-insert into arrears(name,debtDate,money,phone,status,image,remark) values('测试1','2020-12-14','1300','13699196016','1','','')
+insert into arrears(name,debtDate,money,phone,status,image,remark) values('测试2','2020-12-14','1300','13699196016','1','','');
+
+delete from arrears where pkey=1;
+/*arrears 添加列 restMoney */
+alter table arrears add  column restMoney float;

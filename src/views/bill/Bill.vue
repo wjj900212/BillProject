@@ -52,7 +52,7 @@ const columns = [
   { title: '欠款金额', dataIndex: 'platform', key: 'platform' },
   { title: '欠款日期', dataIndex: 'debtDate', key: 'debtDate', scopedSlots: { customRender: 'debtDate' } },
   { title: '已还金额', dataIndex: 'upgradeNum', key: 'upgradeNum' },
-  { title: '剩余金额', dataIndex: 'creator', key: 'creator' },
+  { title: '剩余金额', dataIndex: 'restMoney', key: 'restMoney' },
   { title: '欠款状态', dataIndex: 'status', key: 'status', scopedSlots: { customRender: 'status' } },
   { title: '备注', dataIndex: 'remark', key: 'remark' },
   { title: '操作', key: 'operation', scopedSlots: { customRender: 'operation' } }
@@ -130,7 +130,7 @@ export default {
             platform: dataList[i].money,
             debtDate: dataList[i].debtDate,
             upgradeNum: 500,
-            creator: 'Jack',
+            restMoney: dataList[i].restMoney,
             status: dataList[i].status,
             remark: dataList[i].remark
           })

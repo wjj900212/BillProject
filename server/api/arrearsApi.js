@@ -36,6 +36,7 @@ router.post('/add', function (req, res) {
   addsqlparams[4] = reqBody.status || ''
   addsqlparams[5] = reqBody.image || ''
   addsqlparams[6] = reqBody.remark || ''
+  addsqlparams[7] = reqBody.money || '' // 剩余的钱数在新增加数据的时候跟借款是一样的
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和Mysql数据库建立连接失败')
