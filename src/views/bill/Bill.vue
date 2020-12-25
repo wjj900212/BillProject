@@ -33,7 +33,6 @@
           </a-table>
         </template>
       </div>
-
     </div>
     <!--添加弹出框-->
     <add-bill
@@ -41,17 +40,25 @@
       @success="handleBillAddSuccess"
       :billAddVisiable = "isShowBillAdd.visible"
     ></add-bill>
+    <!-- 修改 -->
+    <edit-bill
+      ref="billEdit"
+      @close="handleBillEditClose"
+      @success="handleBillEditSuccess"
+      :billEditVisiable="isShowBillEdit.visible">
+    </edit-bill>
   </div>
 </template>
 
 <script>
 import AddBill from './addBill'
+import EditBill from './editBill'
 const columns = [
   { title: '序号', customRender: (text, record, index) => `${index + 1}` },
   { title: '欠款人姓名', dataIndex: 'name', key: 'name' },
-  { title: '欠款金额', dataIndex: 'platform', key: 'platform' },
+  { title: '欠款金额', dataIndex: 'money', key: 'money' },
   { title: '欠款日期', dataIndex: 'debtDate', key: 'debtDate', scopedSlots: { customRender: 'debtDate' } },
-  { title: '已还金额', dataIndex: 'upgradeNum', key: 'upgradeNum' },
+  { title: '已还金额', dataIndex: 'alreadyMoney', key: 'alreadyMoney' },
   { title: '剩余金额', dataIndex: 'restMoney', key: 'restMoney' },
   { title: '欠款状态', dataIndex: 'status', key: 'status', scopedSlots: { customRender: 'status' } },
   { title: '备注', dataIndex: 'remark', key: 'remark' },
@@ -81,10 +88,14 @@ export default {
       innerData,
       isShowBillAdd: {
         visible: false
+      },
+      isShowBillEdit: {
+        visible: false
       }
     }
   },
   components: {
+    EditBill,
     AddBill
   },
   mounted () {
@@ -93,28 +104,14 @@ export default {
   methods: {
     showModal () {
       this.isShowBillAdd.visible = true
-      console.log('弹出model')
     },
     handleBillAddClose () {
       this.isShowBillAdd.visible = false
-      console.log('关闭添加设备页面')
     },
     handleBillAddSuccess () {
       this.isShowBillAdd.visible = false
       this.$message.success('新增设备成功')
       this.getArrearsList()
-    },
-    handleOk (e) {
-      this.ModalText = 'The modal will be closed after two seconds'
-      this.confirmLoading = true
-      setTimeout(() => {
-        this.visible = false
-        this.confirmLoading = false
-      }, 2000)
-    },
-    handleCancel (e) {
-      console.log('Clicked cancel button')
-      this.visible = false
     },
     getArrearsList () {
       let _this = this
@@ -127,9 +124,10 @@ export default {
           arrearsData.push({
             key: dataList[i].pkey,
             name: dataList[i].name,
-            platform: dataList[i].money,
+            money: dataList[i].money,
             debtDate: dataList[i].debtDate,
-            upgradeNum: 500,
+            phone: dataList[i].phone,
+            alreadyMoney: dataList[i].alreadyMoney,
             restMoney: dataList[i].restMoney,
             status: dataList[i].status,
             remark: dataList[i].remark
@@ -138,8 +136,18 @@ export default {
         _this.data = arrearsData
       })
     },
+    handleBillEditClose () {
+      this.isShowBillEdit.visible = false
+    },
+    handleBillEditSuccess () {
+      this.isShowBillEdit.visible = false
+      this.$message.success('修改借款信息成功')
+      this.getArrearsList()
+    },
     billEidt (record) {
-
+      console.log(record)
+      this.$refs.billEdit.setFormValues(record)
+      this.isShowBillEdit.visible = true
     },
     billDelete (record) {
       let that = this

@@ -33,5 +33,14 @@ insert into arrears(name,debtDate,money,phone,status,image,remark) values('测�
 insert into arrears(name,debtDate,money,phone,status,image,remark) values('测试2','2020-12-14','1300','13699196016','1','','');
 
 delete from arrears where pkey=1;
-/*arrears 添加列 restMoney */
+/*arrears 添加列
+ restMoney 剩余金额
+ alreadyMoney 已还金额
+ */
 alter table arrears add  column restMoney float;
+alter table arrears add  column alreadyMoney float;
+
+/*修改列类型*/
+alter table arrears modify column money double;
+alter table arrears modify column restMoney double;
+alter table arrears modify column alreadyMoney double;

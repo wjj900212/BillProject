@@ -39,6 +39,22 @@
         ]"
       />
     </a-form-item>
+    <a-form-item v-bind="formItemLayout" label="已还金额:">
+      <a-input placeholder="请输入已还金额"
+               v-decorator="[
+          'alreadyMoney',
+          {
+            rules: [
+              {
+                required: true,
+                message: 'Please input your alreadyMoney!',
+              }
+            ],
+            initialValue: 0
+          },
+        ]"
+      />
+    </a-form-item>
     <a-form-item v-bind="formItemLayout" label="日期:">
       <a-date-picker placeholder="请选择借款日期"
         v-decorator="[
@@ -143,6 +159,7 @@ export default {
           if (values.remark !== undefined) {
             params.remark = values.remark
           }
+          params.alreadyMoney = values.alreadyMoney
           console.log(params)
           _this.$postDate('api/add', params, {headers: {'Content-Type': 'application/json'}}).then((r) => {
             _this.form.resetFields()
